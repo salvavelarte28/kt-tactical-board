@@ -30,7 +30,11 @@
 
 <script>
   let mode = 'move';
-let board = document.getElementById('board');
+let board;
+window.onload = () => {
+  board = document.getElementById('board');
+};
+
 let startX, startY;
 
 function addToken(color) {
