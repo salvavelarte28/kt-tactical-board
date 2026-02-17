@@ -11,8 +11,8 @@ body { margin:0; font-family:sans-serif; }
 #toolbar button, #toolbar select { padding:5px 10px; font-size:14px; cursor:pointer; }
 
 #board {
-  width:100vw;
-  height:calc(100vh - 50px);
+  width: 22,4 * 50px;
+  height: 30 * 50px;
   position:relative;
   overflow:hidden;
   touch-action:none;
@@ -29,7 +29,7 @@ body { margin:0; font-family:sans-serif; }
   background-image:
     linear-gradient(to right, rgba(255,255,255,0.15) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255,255,255,0.15) 1px, transparent 1px);
-  background-size:50px 50px; /* 1 celda = 1 pulgada = 50px ahora */
+  background-size:pxPerInch pxPerInch; /* 1 celda = 1 pulgada = 50px ahora */
 }
 .token {
   position: absolute;  /* Para poder moverla */
@@ -84,11 +84,12 @@ body { margin:0; font-family:sans-serif; }
 window.onload = () => {
   const board = document.getElementById('board');
   let mode = 'move';
-
+  c
   // Peanas en mm
   const sizesMM = { small:25, normal:28, large:32, huge:40 };
   // Escala aumentada: 1 pulgada = 50px
-  const mmToPx = mm => mm * (50 / 25.4);
+  const pxPerInch = 50;
+  const mmToPx = mm => mm * (pxPerInch / 25.4);
 
   const blueSelect = document.getElementById('blueUnitType');
   const redSelect = document.getElementById('redUnitType');
