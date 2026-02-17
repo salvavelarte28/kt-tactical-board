@@ -9,7 +9,7 @@ body { margin:0; font-family:sans-serif; }
 #toolbar {
   height:50px; background:#222; display:flex; align-items:center; padding:5px; gap:5px;
 }
-#toolbar button { padding:5px 10px; font-size:14px; cursor:pointer; }
+#toolbar button, #toolbar select { padding:5px 10px; font-size:14px; cursor:pointer; }
 
 #board {
   width:100vw; height:calc(100vh - 50px); position:relative; overflow:hidden; touch-action:none;
@@ -40,6 +40,12 @@ body { margin:0; font-family:sans-serif; }
 <body>
 
 <div id="toolbar">
+  <select id="unitType">
+    <option value="small">Peana 25mm</option>
+    <option value="normal" selected>Peana 28mm</option>
+    <option value="large">Peana 32mm</option>
+    <option value="huge">Peana 40mm</option>
+  </select>
   <button id="blueBtn">Ficha azul</button>
   <button id="redBtn">Ficha roja</button>
   <button id="moveBtn">Mover</button>
@@ -58,9 +64,10 @@ window.onload = () => {
 
   // Tamaños de peanas en mm
   const sizesMM = { small:25, normal:28, large:32, huge:40 };
-
-  // Escala: 1 pulgada = 28px
+  // Conversión mm -> px, 1 pulgada = 28px
   const mmToPx = mm => mm * (28 / 25.4);
+
+  const unitSelect = document.getElementById('unitType');
 
   // Botones
   document.getElementById('blueBtn').onclick = () => addToken('blue');
@@ -78,11 +85,10 @@ window.onload = () => {
     });
   };
 
-  // Crear ficha con selección de peana
+  // Crear ficha
   function addToken(color){
-    const type = prompt("Elige peana: small, normal, large, huge","normal");
-    if(!type || !sizesMM[type]) return;
-
+    const type = unitSelect.value; // obtiene el valor del select
+    if(!sizesMM[type]) return;
     const sizePx = mmToPx(sizesMM[type]);
     const token = document.createElement('div');
     token.className = 'token '+color;
@@ -94,7 +100,7 @@ window.onload = () => {
     board.appendChild(token);
   }
 
-  // Hacer movible cualquier elemento
+  // Movible
   function makeDraggable(el){
     el.onmousedown = e=>{
       e.preventDefault();
@@ -143,7 +149,7 @@ window.onload = () => {
     mode='move';
   }
 
-  // Click en tablero: objetivos o borrar
+  // Click tablero: objetivos o borrar
   board.onclick = e=>{
     if(mode==='objective'){
       const objective=document.createElement('div');
