@@ -6,77 +6,79 @@
 
 <style>
   body {
-    margin: 0;
-    font-family: sans-serif;
-  }
+  margin: 0;
+  font-family: sans-serif;
+}
 
-  #toolbar {
-    height: 50px;
-    background: #222;
-    display: flex;
-    align-items: center;
-    padding: 5px;
-    gap: 5px;
-  }
+#toolbar {
+  height: 50px;
+  background: #222;
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  gap: 5px;
+}
 
-  #toolbar button, #toolbar select {
-    padding: 5px 10px;
-    font-size: 14px;
-    cursor: pointer;
-  }
+#toolbar button, #toolbar select {
+  padding: 5px 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
 
-  #board {
-    width: 100vw;
-    height: calc(100vh - 50px);
-    position: relative;
-    overflow: hidden;
-    touch-action: none;
+#board {
+  width: 100vw;
+  height: calc(100vh - 50px);
+  position: relative;
+  overflow: hidden;
+  touch-action: none;
+  background: url('mapa.jpg') no-repeat center center;
+  background-size: cover;
+  z-index: 1; /* mapa detrás */
+}
 
-    /* Mapa de fondo */
-    background: url('mapa.jpg') no-repeat center center;
-    background-size: cover;
-  }
+/* Cuadrícula encima del mapa */
+#board::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* deja pasar clics */
+  z-index: 0;           /* cuadrícula detrás de fichas */
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,0.15) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.15) 1px, transparent 1px);
+  background-size: 28px 28px; /* ajusta según escala */
+}
 
-  /* Cuadrícula encima */
-  #board::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
+/* Fichas, objetivos y flechas */
+.token, .objective, .line {
+  position: absolute;
+  z-index: 10; /* siempre encima del mapa y cuadrícula */
+}
 
-    background-image:
-      linear-gradient(to right, rgba(255,255,255,0.15) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(255,255,255,0.15) 1px, transparent 1px);
-    background-size: 28px 28px; /* Ajusta según escala deseada */
-  }
+.token {
+  border-radius: 50%;
+  cursor: grab;
+}
 
-  .token, .objective, .line {
-    position: absolute;
-  }
+.objective {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: orange;
+  color: black;
+  text-align: center;
+  font-weight: bold;
+  line-height: 24px;
+  cursor: grab;
+  user-select: none;
+}
 
-  .token {
-    border-radius: 50%;
-    cursor: grab;
-  }
-
-  .objective {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background: orange;
-    color: black;
-    text-align: center;
-    font-weight: bold;
-    line-height: 24px;
-    cursor: grab;
-    user-select: none;
-  }
 </style>
 
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
 </head>
 <body>
 
@@ -99,6 +101,7 @@
 
 <div id="board"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script>
 window.onload = () => {
   const board = document.getElementById('board');
@@ -123,7 +126,7 @@ window.onload = () => {
     });
   };
 
-  // Función para crear ficha según selector
+  // Crear ficha según selector
   function addToken(color) {
     const type = document.getElementById('unitType').value;
     const token = document.createElement('div');
@@ -136,7 +139,7 @@ window.onload = () => {
     board.appendChild(token);
   }
 
-  // Función para mover elementos
+  // Mover elementos
   function makeDraggable(el) {
     el.onmousedown = e => {
       e.preventDefault();
@@ -158,7 +161,7 @@ window.onload = () => {
     };
   }
 
-  // Eventos del tablero solo para objetivos, flechas y borrar
+  // Click en tablero solo para objetivos, flechas y borrar
   board.onclick = e => {
     if (mode === 'objective') {
       const objective = document.createElement('div');
@@ -171,7 +174,6 @@ window.onload = () => {
       mode = 'move';
     }
 
-    // Aquí puedes añadir lógica de flechas y borrar
     if (mode === 'erase') {
       const el = e.target;
       if (el.classList.contains('token') || el.classList.contains('objective') || el.classList.contains('line')) {
@@ -181,6 +183,8 @@ window.onload = () => {
     }
   };
 };
+</script>
+
 
 </script>
 
