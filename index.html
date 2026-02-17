@@ -54,8 +54,6 @@ body { margin:0; font-family:sans-serif; }
 <button id="redBtn">Ficha roja</button>
 
   </select>
-  <button id="blueBtn">Ficha azul</button>
-  <button id="redBtn">Ficha roja</button>
   <button id="moveBtn">Mover</button>
   <button id="drawBtn">Flecha</button>
   <button id="eraseBtn">Borrar</button>
@@ -73,7 +71,7 @@ window.onload = () => {
 
   // Peanas en mm
   const sizesMM = { small:25, normal:28, large:32, huge:40 };
-  const mmToPx = mm => mm * (28 / 25.4); // 1 pulgada = 28px
+  const mmToPx = mm => mm * (50 / 25.4); // 1 pulgada = 28px
 
   // Botones
   document.getElementById('blueBtn').onclick = () => addToken('blue');
@@ -105,8 +103,8 @@ window.onload = () => {
   token.className = 'token ' + color;
   token.style.width = sizePx + 'px';
   token.style.height = sizePx + 'px';
-  token.style.left = '50px';
-  token.style.top = '50px';
+  token.style.left = (board.clientWidth/2 - sizePx/2)+'px';
+  token.style.top  = (board.clientHeight/2 - sizePx/2)+'px';
   makeDraggable(token);
   board.appendChild(token);
 }
