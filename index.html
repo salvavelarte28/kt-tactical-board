@@ -57,6 +57,7 @@
 <div id="toolbar">
   <button id="blueBtn">Ficha azul</button>
   <button id="redBtn">Ficha roja</button>
+  <button id="moveBtn">Mover</button>
   <button id="drawBtn">Flecha</button>
   <button id="eraseBtn">Borrar</button>
 </div>
@@ -75,6 +76,7 @@ window.onload = () => {
   document.getElementById('redBtn').onclick = () => addToken('red');
   document.getElementById('drawBtn').onclick = () => mode = 'draw';
   document.getElementById('eraseBtn').onclick = () => mode = 'erase';
+  document.getElementById('moveBtn').onclick = () => mode = 'move';
 
   function addToken(color) {
     const token = document.createElement('div');
