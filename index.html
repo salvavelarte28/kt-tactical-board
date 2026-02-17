@@ -4,100 +4,137 @@
   <meta charset="UTF-8">
   <title>KT Tactical Board</title>
   <style>
-    body { background:#111; color:#fff; font-family:sans-serif; margin:0; }
-    #toolbar { padding:10px; background:#222; display:flex; gap:10px; }
-    button { padding:8px 12px; cursor:pointer; }
-    #board { width:100vw; height:calc(100vh - 50px); background:#333; position:relative; }
-    .token {
-      width:40px; height:40px; border-radius:50%;
-      position:absolute; cursor:grab;
+    body {
+      margin: 0;
+      background: #111;
+      color: white;
+      font-family: Arial, sans-serif;
     }
-    .blue { background:#4da3ff; }
-    .red { background:#ff4d4d; }
+
+    #toolbar {
+      background: #222;
+      padding: 10px;
+      display: flex;
+      gap: 10px;
+    }
+
+    button {
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+
+    #board {
+      width: 100vw;
+      height: calc(100vh - 50px);
+      background: #333;
+      position: relative;
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    .token {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      position: absolute;
+      cursor: grab;
+    }
+
+    .blue { background: #4da3ff; }
+    .red { background: #ff4d4d; }
+
+    .line {
+      position: absolute;
+      height: 4px;
+      background: yellow;
+      transform-origin: 0 50%;
+    }
   </style>
 </head>
+
 <body>
 
 <div id="toolbar">
-  <button onclick="addToken('blue')">Ficha azul</button>
-  <button onclick="addToken('red')">Ficha roja</button>
-  <button onclick="setMode('draw')">Flecha</button>
-  <button onclick="setMode('erase')">Borrar</button>
+  <button id="blueBtn">Ficha azul</button>
+  <button id="redBtn">Ficha roja</button>
+  <button id="drawBtn">Flecha</button>
+  <button id="eraseBtn">Borrar</button>
 </div>
-
 
 <div id="board"></div>
 
 <script>
+window.onload = () => {
+
+  const board = document.getElementById('board');
   let mode = 'move';
-  let board;
-  window.onload = () => {
-    board = document.getElementById('board');
-  };
-  let startX, startY;
+  let startX = 0;
+  let startY = 0;
 
-function addToken(color) {
-  const token = document.createElement('div');
-  token.className = 'token ' + color;
-  token.style.left = '50px';
-  token.style.top = '50px';
-  makeDraggable(token);
-  document.getElementById('board').appendChild(token);
-}
+  document.getElementById('blueBtn').onclick = () => addToken('blue');
+  document.getElementById('redBtn').onclick = () => addToken('red');
+  document.getElementById('drawBtn').onclick = () => mode = 'draw';
+  document.getElementById('eraseBtn').onclick = () => mode = 'erase';
 
-function makeDraggable(el) 
-function setMode(newMode) {
-  mode = newMode;
-}
-
-board.onmousedown = e => {
-  if (mode !== 'draw') return;
-  startX = e.offsetX;
-  startY = e.offsetY;
-};
-
-board.onmouseup = e => {
-  if (mode !== 'draw') return;
-
-  const line = document.createElement('div');
-  const dx = e.offsetX - startX;
-  const dy = e.offsetY - startY;
-  const length = Math.sqrt(dx*dx + dy*dy);
-  const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-
-  line.style.position = 'absolute';
-  line.style.left = startX + 'px';
-  line.style.top = startY + 'px';
-  line.style.width = length + 'px';
-  line.style.height = '4px';
-  line.style.background = 'yellow';
-  line.style.transformOrigin = '0 50%';
-  line.style.transform = `rotate(${angle}deg)`;
-  line.className = 'drawable';
-
-  board.appendChild(line);
-};
-
-  let offsetX, offsetY;
-  el.onpointerdown = e => {
-    offsetX = e.offsetX;
-    offsetY = e.offsetY;
-    document.onpointermove = e2 => {
-      el.style.left = (e2.pageX - offsetX) + 'px';
-      el.style.top = (e2.pageY - offsetY) + 'px';
-    };
-    document.onpointerup = () => {
-      document.onmousemove = null;
-    };
-    board.onclick = e => {
-  if (mode !== 'erase') return;
-  if (e.target.classList.contains('token') || e.target.classList.contains('drawable')) {
-    e.target.remove();
+  function addToken(color) {
+    const token = document.createElement('div');
+    token.className = 'token ' + color;
+    token.style.left = '50px';
+    token.style.top = '50px';
+    makeDraggable(token);
+    board.appendChild(token);
   }
-};
 
+  function makeDraggable(el) {
+    el.onpointerdown = e => {
+      if (mode !== 'move') return;
+      const rect = el.getBoundingClientRect();
+      const offsetX = e.clientX - rect.left;
+      const offsetY = e.clientY - rect.top;
+
+      document.onpointermove = e2 => {
+        el.style.left = (e2.clientX - offsetX) + 'px';
+        el.style.top = (e2.clientY - offsetY) + 'px';
+      };
+
+      document.onpointerup = () => {
+        document.onpointermove = null;
+      };
+    };
+  }
+
+  board.onpointerdown = e => {
+    if (mode !== 'draw') return;
+    startX = e.offsetX;
+    startY = e.offsetY;
   };
-}
+
+  board.onpointerup = e => {
+    if (mode !== 'draw') return;
+
+    const dx = e.offsetX - startX;
+    const dy = e.offsetY - startY;
+    const length = Math.sqrt(dx * dx + dy * dy);
+    const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+
+    const line = document.createElement('div');
+    line.className = 'line';
+    line.style.left = startX + 'px';
+    line.style.top = startY + 'px';
+    line.style.width = length + 'px';
+    line.style.transform = `rotate(${angle}deg)`;
+
+    board.appendChild(line);
+  };
+
+  board.onclick = e => {
+    if (mode !== 'erase') return;
+    if (e.target.classList.contains('token') || e.target.classList.contains('line')) {
+      e.target.remove();
+    }
+  };
+
+};
 </script>
 
 </body>
