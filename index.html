@@ -11,13 +11,10 @@ body { margin:0; font-family:sans-serif; }
 #toolbar button, #toolbar select { padding:5px 10px; font-size:14px; cursor:pointer; }
 
 #board {
-  width:100vw;
-  height:calc(100vh - 50px);
   position:relative;
-  overflow:hidden;
-  touch-action:none;
   background: url('mapa.jpg') no-repeat center center;
   background-size:cover;
+  border: 1px solid #555;
   z-index:1;
 }
 
@@ -82,7 +79,15 @@ body { margin:0; font-family:sans-serif; }
 
 <script>
 window.onload = () => {
+  const pxPerInch = 50;          // 1 pulgada = 50 px
+  const boardWidthPx  = 22.4 * pxPerInch;  // ancho tablero Kill Team
+  const boardHeightPx = 30   * pxPerInch;  // alto tablero Kill Team
+
   const board = document.getElementById('board');
+
+  // Aplica tamaño al tablero
+  board.style.width  = boardWidthPx + 'px';
+  board.style.height = boardHeightPx + 'px';
   let mode = 'move';
 
   // Peanas en mm
