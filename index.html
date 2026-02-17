@@ -5,7 +5,6 @@
 <title>Kill Team Planner</title>
 <style>
 body { margin:0; font-family:sans-serif; }
-
 #toolbar {
   height:50px; background:#222; display:flex; align-items:center; padding:5px; gap:5px;
 }
@@ -26,7 +25,6 @@ body { margin:0; font-family:sans-serif; }
   background-size:28px 28px; /* 1 celda = 1 pulgada = 28px */
 }
 
-/* Fichas, objetivos y flechas */
 .token, .objective, .line { position:absolute; z-index:10; }
 .token { border-radius:50%; cursor:grab; }
 .objective {
@@ -61,13 +59,11 @@ body { margin:0; font-family:sans-serif; }
 window.onload = () => {
   const board = document.getElementById('board');
   let mode = 'move';
-
-  // Tamaños de peanas en mm
-  const sizesMM = { small:25, normal:28, large:32, huge:40 };
-  // Conversión mm -> px, 1 pulgada = 28px
-  const mmToPx = mm => mm * (28 / 25.4);
-
   const unitSelect = document.getElementById('unitType');
+
+  // Peanas en mm
+  const sizesMM = { small:25, normal:28, large:32, huge:40 };
+  const mmToPx = mm => mm * (28 / 25.4); // 1 pulgada = 28px
 
   // Botones
   document.getElementById('blueBtn').onclick = () => addToken('blue');
@@ -85,41 +81,41 @@ window.onload = () => {
     });
   };
 
-  // Crear ficha
+  // Crear ficha según select
   function addToken(color){
-    const type = unitSelect.value; // obtiene el valor del select
+    const type = unitSelect.value;
     if(!sizesMM[type]) return;
     const sizePx = mmToPx(sizesMM[type]);
     const token = document.createElement('div');
     token.className = 'token '+color;
     token.style.width = sizePx+'px';
     token.style.height = sizePx+'px';
-    token.style.left='50px';
-    token.style.top='50px';
+    token.style.left = '50px';
+    token.style.top = '50px';
     makeDraggable(token);
     board.appendChild(token);
   }
 
-  // Movible
+  // Hacer movible cualquier elemento
   function makeDraggable(el){
     el.onmousedown = e=>{
       e.preventDefault();
       let offsetX = e.clientX - el.offsetLeft;
       let offsetY = e.clientY - el.offsetTop;
-      function mouseMoveHandler(e){
+      function moveHandler(e){
         el.style.left = (e.clientX - offsetX)+'px';
         el.style.top = (e.clientY - offsetY)+'px';
       }
-      function mouseUpHandler(){
-        document.removeEventListener('mousemove', mouseMoveHandler);
-        document.removeEventListener('mouseup', mouseUpHandler);
+      function upHandler(){
+        document.removeEventListener('mousemove', moveHandler);
+        document.removeEventListener('mouseup', upHandler);
       }
-      document.addEventListener('mousemove', mouseMoveHandler);
-      document.addEventListener('mouseup', mouseUpHandler);
+      document.addEventListener('mousemove', moveHandler);
+      document.addEventListener('mouseup', upHandler);
     };
   }
 
-  // Dibujar flechas
+  // Flechas
   let startX, startY, tempLine;
   board.onmousedown = e=>{
     if(mode==='draw'){
@@ -131,21 +127,21 @@ window.onload = () => {
       tempLine.style.width='0px';
       tempLine.style.height='2px';
       board.appendChild(tempLine);
-      board.onmousemove=drawMove;
-      board.onmouseup=drawEnd;
+      board.onmousemove = drawMove;
+      board.onmouseup = drawEnd;
     }
   };
   function drawMove(e){
-    const width=Math.hypot(e.offsetX-startX,e.offsetY-startY);
-    tempLine.style.width=width+'px';
-    const angle=Math.atan2(e.offsetY-startY,e.offsetX-startX)*180/Math.PI;
-    tempLine.style.transform=`rotate(${angle}deg)`;
-    tempLine.style.transformOrigin='0 0';
+    const width = Math.hypot(e.offsetX-startX, e.offsetY-startY);
+    tempLine.style.width = width+'px';
+    const angle = Math.atan2(e.offsetY-startY, e.offsetX-startX)*180/Math.PI;
+    tempLine.style.transform = `rotate(${angle}deg)`;
+    tempLine.style.transformOrigin = '0 0';
   }
   function drawEnd(e){
-    board.onmousemove=null;
-    board.onmouseup=null;
-    tempLine=null;
+    board.onmousemove = null;
+    board.onmouseup = null;
+    tempLine = null;
     mode='move';
   }
 
@@ -154,15 +150,15 @@ window.onload = () => {
     if(mode==='objective'){
       const objective=document.createElement('div');
       objective.className='objective';
-      objective.style.left=(e.offsetX-12)+'px';
-      objective.style.top=(e.offsetY-12)+'px';
-      objective.innerText=prompt("Número o letra del objetivo:","1")||"1";
+      objective.style.left = (e.offsetX-12)+'px';
+      objective.style.top = (e.offsetY-12)+'px';
+      objective.innerText = prompt("Número o letra del objetivo:","1") || "1";
       makeDraggable(objective);
       board.appendChild(objective);
       mode='move';
     }
     if(mode==='erase'){
-      const el=e.target;
+      const el = e.target;
       if(el.classList.contains('token') || el.classList.contains('objective') || el.classList.contains('line')){
         el.remove();
       }
