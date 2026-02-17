@@ -24,13 +24,24 @@
     }
 
     #board {
-      width: 100vw;
-      height: calc(100vh - 50px);
-      background: #333;
-      position: relative;
-      overflow: hidden;
-      touch-action: none;
-    }
+  width: 100vw;
+  height: calc(100vh - 50px);
+  position: relative;
+  overflow: hidden;
+  touch-action: none;
+
+  /* Imagen de mapa */
+  background: url('mapa.jpg') no-repeat center center;
+  background-size: cover;
+
+  /* Cuadrícula encima */
+  background-image:
+    url('mapa.jpg'),
+    linear-gradient(to right, rgba(255,255,255,0.15) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.15) 1px, transparent 1px);
+  background-size: cover, 40px 40px, 40px 40px;
+}
+
 
     .token {
       width: 40px;
