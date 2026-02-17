@@ -43,6 +43,12 @@
     .blue { background: #4da3ff; }
     .red { background: #ff4d4d; }
 
+    .objective {
+  cursor: grab;
+  font-size: 14px;
+}
+
+
     .line {
       position: absolute;
       height: 4px;
@@ -58,6 +64,7 @@
 <div id="toolbar">
   <button id="blueBtn">Ficha azul</button>
   <button id="redBtn">Ficha roja</button>
+  <button id="objectiveBtn">Objetivo</button>
   <button id="moveBtn">Mover</button>
   <button id="drawBtn">Flecha</button>
   <button id="eraseBtn">Borrar</button>
@@ -82,6 +89,7 @@ window.onload = () => {
   document.getElementById('drawBtn').onclick = () => mode = 'draw';
   document.getElementById('eraseBtn').onclick = () => mode = 'erase';
   document.getElementById('moveBtn').onclick = () => mode = 'move';
+  document.getElementById('objectiveBtn').onclick = () => mode = 'objective';
   
     document.getElementById('exportBtn').onclick = () => {
     html2canvas(board).then(canvas => {
@@ -154,6 +162,43 @@ window.onload = () => {
     mode = 'move'; // 🔥 vuelve a mover
   }
 };
+  board.onclick = e => {
+
+  // BORRAR (mantén lo que ya tenías)
+  if (mode === 'erase') {
+    if (e.target.classList.contains('token') || e.target.classList.contains('line') || e.target.classList.contains('objective')) {
+      e.target.remove();
+      mode = 'move'; // vuelve a mover
+    }
+    return;
+  }
+
+  // OBJETIVO
+  if (mode === 'objective') {
+    const objective = document.createElement('div');
+    objective.className = 'objective';
+    objective.style.position = 'absolute';
+    objective.style.left = (e.offsetX - 12) + 'px';
+    objective.style.top = (e.offsetY - 12) + 'px';
+    objective.style.width = '24px';
+    objective.style.height = '24px';
+    objective.style.background = 'orange';
+    objective.style.color = 'black';
+    objective.style.borderRadius = '50%';
+    objective.style.textAlign = 'center';
+    objective.style.fontWeight = 'bold';
+    objective.style.lineHeight = '24px';
+    objective.style.userSelect = 'none';
+    objective.innerText = prompt("Número o letra del objetivo:", "1") || "1";
+
+    makeDraggable(objective);
+    board.appendChild(objective);
+
+    mode = 'move'; // 🔥 vuelve automáticamente a mover
+  }
+
+};
+
 
 
 };
