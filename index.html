@@ -76,14 +76,14 @@ board.onmouseup = e => {
 };
 
   let offsetX, offsetY;
-  el.onmousedown = e => {
+  el.onpointerdown = e => {
     offsetX = e.offsetX;
     offsetY = e.offsetY;
-    document.onmousemove = e2 => {
+    document.onpointermove = e2 => {
       el.style.left = (e2.pageX - offsetX) + 'px';
       el.style.top = (e2.pageY - offsetY) + 'px';
     };
-    document.onmouseup = () => {
+    document.onpointerup = () => {
       document.onmousemove = null;
     };
     board.onclick = e => {
