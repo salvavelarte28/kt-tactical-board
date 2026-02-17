@@ -3,99 +3,43 @@
 <head>
 <meta charset="UTF-8">
 <title>Kill Team Planner</title>
-
 <style>
-body {
-  margin: 0;
-  font-family: sans-serif;
-}
+body { margin:0; font-family:sans-serif; }
 
-/* Toolbar */
 #toolbar {
-  height: 50px;
-  background: #222;
-  display: flex;
-  align-items: center;
-  padding: 5px;
-  gap: 5px;
+  height:50px; background:#222; display:flex; align-items:center; padding:5px; gap:5px;
 }
+#toolbar button { padding:5px 10px; font-size:14px; cursor:pointer; }
 
-#toolbar button, #toolbar select {
-  padding: 5px 10px;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-/* Tablero */
 #board {
-  width: 100vw;
-  height: calc(100vh - 50px);
-  position: relative;
-  overflow: hidden;
-  touch-action: none;
-  background: url('mapa.jpg') no-repeat center center;
-  background-size: cover;
-  z-index: 1; /* mapa detrás */
+  width:100vw; height:calc(100vh - 50px); position:relative; overflow:hidden; touch-action:none;
+  background: url('mapa.jpg') no-repeat center center; background-size:cover; z-index:1;
 }
 
 /* Cuadrícula encima del mapa */
 #board::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none; /* deja pasar clics */
-  z-index: 2; /* cuadrícula encima del mapa pero debajo de fichas */
+  content:""; position:absolute; top:0; left:0; width:100%; height:100%;
+  pointer-events:none; z-index:2;
   background-image:
     linear-gradient(to right, rgba(255,255,255,0.15) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255,255,255,0.15) 1px, transparent 1px);
-  background-size: 28px 28px; /* ajusta según escala */
+  background-size:28px 28px;
 }
 
 /* Fichas, objetivos y flechas */
-.token, .objective, .line {
-  position: absolute;
-  z-index: 10; /* siempre encima de mapa y cuadrícula */
-}
-
-.token {
-  border-radius: 50%;
-  cursor: grab;
-}
-
+.token, .objective, .line { position:absolute; z-index:10; }
+.token { border-radius:50%; cursor:grab; }
 .objective {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: orange;
-  color: black;
-  text-align: center;
-  font-weight: bold;
-  line-height: 24px;
-  cursor: grab;
-  user-select: none;
+  width:24px; height:24px; border-radius:50%; background:orange; color:black;
+  text-align:center; font-weight:bold; line-height:24px; cursor:grab; user-select:none;
 }
-
-.line {
-  width: 2px;
-  background: red;
-}
+.line { width:2px; background:red; }
 </style>
-
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
 <body>
 
 <div id="toolbar">
-  <select id="unitType">
-    <option value="small">Peana 25mm</option>
-    <option value="normal" selected>Peana 28mm</option>
-    <option value="large">Peana 32mm</option>
-    <option value="huge">Peana 40mm</option>
-  </select>
-
   <button id="blueBtn">Ficha azul</button>
   <button id="redBtn">Ficha roja</button>
   <button id="moveBtn">Mover</button>
@@ -111,114 +55,105 @@ body {
 window.onload = () => {
   const board = document.getElementById('board');
   let mode = 'move';
-
-  const sizes = { small: 25, normal: 28, large: 32, huge: 40 };
+  const sizes = { small:25, normal:28, large:32, huge:40 };
 
   // Botones
   document.getElementById('blueBtn').onclick = () => addToken('blue');
   document.getElementById('redBtn').onclick = () => addToken('red');
-  document.getElementById('moveBtn').onclick = () => mode = 'move';
-  document.getElementById('drawBtn').onclick = () => mode = 'draw';
-  document.getElementById('eraseBtn').onclick = () => mode = 'erase';
-  document.getElementById('objectiveBtn').onclick = () => mode = 'objective';
+  document.getElementById('moveBtn').onclick = () => mode='move';
+  document.getElementById('drawBtn').onclick = () => mode='draw';
+  document.getElementById('eraseBtn').onclick = () => mode='erase';
+  document.getElementById('objectiveBtn').onclick = () => mode='objective';
   document.getElementById('exportBtn').onclick = () => {
-    html2canvas(board).then(canvas => {
+    html2canvas(board).then(canvas=>{
       const link = document.createElement('a');
-      link.download = 'kt-plan.png';
-      link.href = canvas.toDataURL();
+      link.download='kt-plan.png';
+      link.href=canvas.toDataURL();
       link.click();
     });
   };
 
-  // Crear ficha según selector
+  // Crear ficha con selección de peana
   function addToken(color) {
-    const type = document.getElementById('unitType').value;
+    const type = prompt("Elige peana: small(25), normal(28), large(32), huge(40)", "normal");
+    if(!type || !sizes[type]) return;
     const token = document.createElement('div');
-    token.className = 'token ' + color;
-    token.style.width = sizes[type] + 'px';
-    token.style.height = sizes[type] + 'px';
-    token.style.left = '50px';
-    token.style.top = '50px';
+    token.className = 'token '+color;
+    token.style.width = sizes[type]+'px';
+    token.style.height = sizes[type]+'px';
+    token.style.left='50px';
+    token.style.top='50px';
     makeDraggable(token);
     board.appendChild(token);
   }
 
-  // Mover cualquier elemento
+  // Hacer movible cualquier elemento
   function makeDraggable(el) {
-    el.onmousedown = e => {
+    el.onmousedown = e=>{
       e.preventDefault();
       let offsetX = e.clientX - el.offsetLeft;
       let offsetY = e.clientY - el.offsetTop;
-
-      function mouseMoveHandler(e) {
-        el.style.left = (e.clientX - offsetX) + 'px';
-        el.style.top = (e.clientY - offsetY) + 'px';
+      function mouseMoveHandler(e){
+        el.style.left = (e.clientX - offsetX)+'px';
+        el.style.top = (e.clientY - offsetY)+'px';
       }
-
-      function mouseUpHandler() {
+      function mouseUpHandler(){
         document.removeEventListener('mousemove', mouseMoveHandler);
         document.removeEventListener('mouseup', mouseUpHandler);
       }
-
       document.addEventListener('mousemove', mouseMoveHandler);
       document.addEventListener('mouseup', mouseUpHandler);
     };
   }
 
-  // Variables para dibujar flechas
+  // Dibujar flechas
   let startX, startY, tempLine;
-
-  board.onmousedown = e => {
-    if (mode === 'draw') {
-      startX = e.offsetX;
-      startY = e.offsetY;
-      tempLine = document.createElement('div');
-      tempLine.className = 'line';
-      tempLine.style.left = startX + 'px';
-      tempLine.style.top = startY + 'px';
-      tempLine.style.height = '2px';
-      tempLine.style.width = '0px';
+  board.onmousedown = e=>{
+    if(mode==='draw'){
+      startX=e.offsetX; startY=e.offsetY;
+      tempLine=document.createElement('div');
+      tempLine.className='line';
+      tempLine.style.left=startX+'px';
+      tempLine.style.top=startY+'px';
+      tempLine.style.width='0px';
+      tempLine.style.height='2px';
       board.appendChild(tempLine);
-
-      board.onmousemove = drawMove;
-      board.onmouseup = drawEnd;
+      board.onmousemove=drawMove;
+      board.onmouseup=drawEnd;
     }
   };
-
-  function drawMove(e) {
-    const width = Math.hypot(e.offsetX - startX, e.offsetY - startY);
-    tempLine.style.width = width + 'px';
-    const angle = Math.atan2(e.offsetY - startY, e.offsetX - startX) * 180 / Math.PI;
-    tempLine.style.transform = `rotate(${angle}deg)`;
-    tempLine.style.transformOrigin = '0 0';
+  function drawMove(e){
+    const width=Math.hypot(e.offsetX-startX,e.offsetY-startY);
+    tempLine.style.width=width+'px';
+    const angle=Math.atan2(e.offsetY-startY,e.offsetX-startX)*180/Math.PI;
+    tempLine.style.transform=`rotate(${angle}deg)`;
+    tempLine.style.transformOrigin='0 0';
+  }
+  function drawEnd(e){
+    board.onmousemove=null;
+    board.onmouseup=null;
+    tempLine=null;
+    mode='move';
   }
 
-  function drawEnd(e) {
-    board.onmousemove = null;
-    board.onmouseup = null;
-    tempLine = null;
-    mode = 'move';
-  }
-
-  // Click en tablero solo para objetivos y borrar
-  board.onclick = e => {
-    if (mode === 'objective') {
-      const objective = document.createElement('div');
-      objective.className = 'objective';
-      objective.style.left = (e.offsetX - 12) + 'px';
-      objective.style.top = (e.offsetY - 12) + 'px';
-      objective.innerText = prompt("Número o letra del objetivo:", "1") || "1";
+  // Click en tablero: objetivos o borrar
+  board.onclick = e=>{
+    if(mode==='objective'){
+      const objective=document.createElement('div');
+      objective.className='objective';
+      objective.style.left=(e.offsetX-12)+'px';
+      objective.style.top=(e.offsetY-12)+'px';
+      objective.innerText=prompt("Número o letra del objetivo:","1")||"1";
       makeDraggable(objective);
       board.appendChild(objective);
-      mode = 'move';
+      mode='move';
     }
-
-    if (mode === 'erase') {
-      const el = e.target;
-      if (el.classList.contains('token') || el.classList.contains('objective') || el.classList.contains('line')) {
+    if(mode==='erase'){
+      const el=e.target;
+      if(el.classList.contains('token') || el.classList.contains('objective') || el.classList.contains('line')){
         el.remove();
       }
-      mode = 'move';
+      mode='move';
     }
   };
 };
