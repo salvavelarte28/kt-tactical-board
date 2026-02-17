@@ -1,85 +1,83 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>KT Tactical Board</title>
-  <style>
-    body {
-      margin: 0;
-      background: #111;
-      color: white;
-      font-family: Arial, sans-serif;
-    }
+<meta charset="UTF-8">
+<title>Kill Team Planner</title>
 
-    #toolbar {
-      background: #222;
-      padding: 10px;
-      display: flex;
-      gap: 10px;
-    }
+<style>
+  body {
+    margin: 0;
+    font-family: sans-serif;
+  }
 
-    button {
-      padding: 8px 12px;
-      cursor: pointer;
-    }
+  #toolbar {
+    height: 50px;
+    background: #222;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    gap: 5px;
+  }
 
-    #board {
-  width: 100vw;
-  height: calc(100vh - 50px);
-  position: relative;
-  overflow: hidden;
-  touch-action: none;
-  background: url('mapa.jpg') no-repeat center center;
-  background-size: cover;
-}
+  #toolbar button, #toolbar select {
+    padding: 5px 10px;
+    font-size: 14px;
+    cursor: pointer;
+  }
 
-/* Cuadrícula encima */
-#board::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none; /* deja pasar clicks */
+  #board {
+    width: 100vw;
+    height: calc(100vh - 50px);
+    position: relative;
+    overflow: hidden;
+    touch-action: none;
 
-  background-image:
-    linear-gradient(to right, rgba(255,255,255,0.15) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255,255,255,0.15) 1px, transparent 1px);
-  background-size: 25,4px 25,4px; /* cada cuadro = 28mm (ajústalo según tu escala) */
-}
+    /* Mapa de fondo */
+    background: url('mapa.jpg') no-repeat center center;
+    background-size: cover;
+  }
 
+  /* Cuadrícula encima */
+  #board::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
 
+    background-image:
+      linear-gradient(to right, rgba(255,255,255,0.15) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.15) 1px, transparent 1px);
+    background-size: 28px 28px; /* Ajusta según escala deseada */
+  }
 
+  .token, .objective, .line {
+    position: absolute;
+  }
 
+  .token {
+    border-radius: 50%;
+    cursor: grab;
+  }
 
-    .token {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      position: absolute;
-      cursor: grab;
-    }
+  .objective {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: orange;
+    color: black;
+    text-align: center;
+    font-weight: bold;
+    line-height: 24px;
+    cursor: grab;
+    user-select: none;
+  }
+</style>
 
-    .blue { background: #4da3ff; }
-    .red { background: #ff4d4d; }
-
-    .objective {
-  cursor: grab;
-  font-size: 14px;
-}
-
-
-    .line {
-      position: absolute;
-      height: 4px;
-      background: yellow;
-      transform-origin: 0 50%;
-    }
-  </style>
-  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
-
 <body>
 
 <div id="toolbar">
@@ -101,10 +99,6 @@
 
 <div id="board"></div>
 
-
-  
-
-
 <script>
 window.onload = () => {
   const board = document.getElementById('board');
@@ -112,15 +106,15 @@ window.onload = () => {
   let startX = 0;
   let startY = 0;
 
-  // Tamaños de peanas en px
+  // Tamaños de peanas
   const sizes = {
-    small: 25,    // 25mm
-    normal: 28,   // 28mm
-    large: 32,    // 32mm
-    huge: 40      // 40mm
+    small: 25,
+    normal: 28,
+    large: 32,
+    huge: 40
   };
 
-  // Botones y selector
+  // Botones
   document.getElementById('blueBtn').onclick = () => addToken('blue');
   document.getElementById('redBtn').onclick = () => addToken('red');
   document.getElementById('moveBtn').onclick = () => mode = 'move';
@@ -141,111 +135,50 @@ window.onload = () => {
     const type = document.getElementById('unitType').value;
     const token = document.createElement('div');
     token.className = 'token ' + color;
-    token.style.position = 'absolute';
-    token.style.left = '50px';
-    token.style.top = '50px';
     token.style.width = sizes[type] + 'px';
     token.style.height = sizes[type] + 'px';
-    token.style.borderRadius = '50%';
+    token.style.left = '50px';
+    token.style.top = '50px';
     makeDraggable(token);
     board.appendChild(token);
   }
 
-  // Aquí van tus eventos para dibujar, borrar, objetivos, etc.
-  // ...
-};
-
-
+  // Función para hacer movible cualquier elemento
   function makeDraggable(el) {
-    el.onpointerdown = e => {
-      if (mode !== 'move') return;
-      const rect = el.getBoundingClientRect();
-      const offsetX = e.clientX - rect.left;
-      const offsetY = e.clientY - rect.top;
+    el.onmousedown = e => {
+      e.preventDefault();
+      let offsetX = e.clientX - el.offsetLeft;
+      let offsetY = e.clientY - el.offsetTop;
 
-      document.onpointermove = e2 => {
-        el.style.left = (e2.clientX - offsetX) + 'px';
-        el.style.top = (e2.clientY - offsetY) + 'px';
-      };
+      function mouseMoveHandler(e) {
+        el.style.left = (e.clientX - offsetX) + 'px';
+        el.style.top = (e.clientY - offsetY) + 'px';
+      }
 
-      document.onpointerup = () => {
-        document.onpointermove = null;
-      };
+      function mouseUpHandler() {
+        document.removeEventListener('mousemove', mouseMoveHandler);
+        document.removeEventListener('mouseup', mouseUpHandler);
+      }
+
+      document.addEventListener('mousemove', mouseMoveHandler);
+      document.addEventListener('mouseup', mouseUpHandler);
     };
   }
 
-  board.onpointerdown = e => {
-    if (mode !== 'draw') return;
-    startX = e.offsetX;
-    startY = e.offsetY;
-  };
-
-  board.onpointerup = e => {
-  if (mode !== 'draw') return;
-
-  const dx = e.offsetX - startX;
-  const dy = e.offsetY - startY;
-  const length = Math.sqrt(dx * dx + dy * dy);
-  const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-
-  const line = document.createElement('div');
-  line.className = 'line';
-  line.style.left = startX + 'px';
-  line.style.top = startY + 'px';
-  line.style.width = length + 'px';
-  line.style.transform = `rotate(${angle}deg)`;
-
-  board.appendChild(line);
-
-  mode = 'move'; // 🔥 Vuelve automáticamente a mover
-};
-
-
+  // Eventos del tablero para objetivos
   board.onclick = e => {
-  if (mode !== 'erase') return;
-  if (e.target.classList.contains('token') || e.target.classList.contains('line')) {
-    e.target.remove();
-    mode = 'move'; // 🔥 vuelve a mover
-  }
-};
-  board.onclick = e => {
-
-  // BORRAR (mantén lo que ya tenías)
-  if (mode === 'erase') {
-    if (e.target.classList.contains('token') || e.target.classList.contains('line') || e.target.classList.contains('objective')) {
-      e.target.remove();
-      mode = 'move'; // vuelve a mover
+    if (mode === 'objective') {
+      const objective = document.createElement('div');
+      objective.className = 'objective';
+      objective.style.left = (e.offsetX - 12) + 'px';
+      objective.style.top = (e.offsetY - 12) + 'px';
+      objective.innerText = prompt("Número o letra del objetivo:", "1") || "1";
+      makeDraggable(objective);
+      board.appendChild(objective);
+      mode = 'move';
     }
-    return;
-  }
-
-  // OBJETIVO
-  if (mode === 'objective') {
-    const objective = document.createElement('div');
-    objective.className = 'objective';
-    objective.style.position = 'absolute';
-    objective.style.left = (e.offsetX - 12) + 'px';
-    objective.style.top = (e.offsetY - 12) + 'px';
-    objective.style.width = '24px';
-    objective.style.height = '24px';
-    objective.style.background = 'orange';
-    objective.style.color = 'black';
-    objective.style.borderRadius = '50%';
-    objective.style.textAlign = 'center';
-    objective.style.fontWeight = 'bold';
-    objective.style.lineHeight = '24px';
-    objective.style.userSelect = 'none';
-    objective.innerText = prompt("Número o letra del objetivo:", "1") || "1";
-
-    makeDraggable(objective);
-    board.appendChild(objective);
-
-    mode = 'move'; // 🔥 vuelve automáticamente a mover
-  }
-
-};
-
-
+    // Aquí puedes añadir más lógica para dibujar flechas o borrar
+  };
 
 };
 </script>
