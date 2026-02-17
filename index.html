@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>KT Tactical Board</title>
+  <style>
+    body { background:#111; color:#fff; font-family:sans-serif; margin:0; }
+    #toolbar { padding:10px; background:#222; display:flex; gap:10px; }
+    button { padding:8px 12px; cursor:pointer; }
+    #board { width:100vw; height:calc(100vh - 50px); background:#333; position:relative; }
+    .token {
+      width:40px; height:40px; border-radius:50%;
+      position:absolute; cursor:grab;
+    }
+    .blue { background:#4da3ff; }
+    .red { background:#ff4d4d; }
+  </style>
+</head>
+<body>
+
+<div id="toolbar">
+  <button onclick="addToken('blue')">Ficha azul</button>
+  <button onclick="addToken('red')">Ficha roja</button>
+</div>
+
+<div id="board"></div>
+
+<script>
+function addToken(color) {
+  const token = document.createElement('div');
+  token.className = 'token ' + color;
+  token.style.left = '50px';
+  token.style.top = '50px';
+  makeDraggable(token);
+  document.getElementById('board').appendChild(token);
+}
+
+function makeDraggable(el) {
+  let offsetX, offsetY;
+  el.onmousedown = e => {
+    offsetX = e.offsetX;
+    offsetY = e.offsetY;
+    document.onmousemove = e2 => {
+      el.style.left = (e2.pageX - offsetX) + 'px';
+      el.style.top = (e2.pageY - offsetY) + 'px';
+    };
+    document.onmouseup = () => {
+      document.onmousemove = null;
+    };
+  };
+}
+</script>
+
+</body>
+</html>
