@@ -37,12 +37,22 @@ body { margin:0; font-family:sans-serif; }
 </head>
 <body>
 
-<div id="toolbar">
-  <select id="unitType">
-    <option value="small">Peana 25mm</option>
-    <option value="normal" selected>Peana 28mm</option>
-    <option value="large">Peana 32mm</option>
-    <option value="huge">Peana 40mm</option>
+<select id="blueUnitType">
+  <option value="small">Peana 25mm</option>
+  <option value="normal" selected>Peana 28mm</option>
+  <option value="large">Peana 32mm</option>
+  <option value="huge">Peana 40mm</option>
+</select>
+<button id="blueBtn">Ficha azul</button>
+
+<select id="redUnitType">
+  <option value="small">Peana 25mm</option>
+  <option value="normal" selected>Peana 28mm</option>
+  <option value="large">Peana 32mm</option>
+  <option value="huge">Peana 40mm</option>
+</select>
+<button id="redBtn">Ficha roja</button>
+
   </select>
   <button id="blueBtn">Ficha azul</button>
   <button id="redBtn">Ficha roja</button>
@@ -83,18 +93,24 @@ window.onload = () => {
 
   // Crear ficha según select
   function addToken(color){
-    const type = unitSelect.value;
-    if(!sizesMM[type]) return;
-    const sizePx = mmToPx(sizesMM[type]);
-    const token = document.createElement('div');
-    token.className = 'token '+color;
-    token.style.width = sizePx+'px';
-    token.style.height = sizePx+'px';
-    token.style.left = '50px';
-    token.style.top = '50px';
-    makeDraggable(token);
-    board.appendChild(token);
+  let type;
+  if(color === 'blue'){
+    type = document.getElementById('blueUnitType').value;
+  } else if(color === 'red'){
+    type = document.getElementById('redUnitType').value;
   }
+  if(!sizesMM[type]) return;
+  const sizePx = mmToPx(sizesMM[type]);
+  const token = document.createElement('div');
+  token.className = 'token ' + color;
+  token.style.width = sizePx + 'px';
+  token.style.height = sizePx + 'px';
+  token.style.left = '50px';
+  token.style.top = '50px';
+  makeDraggable(token);
+  board.appendChild(token);
+}
+
 
   // Hacer movible cualquier elemento
   function makeDraggable(el){
