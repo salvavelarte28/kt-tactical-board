@@ -30,22 +30,27 @@
   overflow: hidden;
   touch-action: none;
 
-  /* Capas de fondo: mapa primero, luego cuadrícula horizontal y vertical */
-  background-image:
-    url('mapa.jpg'), /* el mapa */
-    linear-gradient(to right, rgba(255,255,255,0.15) 1px, transparent 1px), /* líneas verticales */
-    linear-gradient(to bottom, rgba(255,255,255,0.15) 1px, transparent 1px); /* líneas horizontales */
-
-  /* Ajuste de tamaños de cada capa */
-  background-size:
-    cover,       /* mapa ocupa todo */
-    40px 40px,   /* cuadrícula vertical */
-    40px 40px;   /* cuadrícula horizontal */
-
-  /* Posición y repetición */
-  background-repeat: no-repeat, repeat, repeat;
-  background-position: center center, 0 0, 0 0;
+  /* Fondo del mapa */
+  background: url('mapa.jpg') no-repeat center center;
+  background-size: cover;
 }
+
+/* Cuadrícula encima */
+#board::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* deja pasar clicks a fichas, flechas, objetivos */
+
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,0.15) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.15) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
 
 
 
