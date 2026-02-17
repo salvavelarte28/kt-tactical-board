@@ -29,8 +29,6 @@
   position: relative;
   overflow: hidden;
   touch-action: none;
-
-  /* Fondo del mapa */
   background: url('mapa.jpg') no-repeat center center;
   background-size: cover;
 }
@@ -43,13 +41,14 @@
   left: 0;
   width: 100%;
   height: 100%;
-  pointer-events: none; /* deja pasar clicks a fichas, flechas, objetivos */
+  pointer-events: none; /* deja pasar clicks */
 
   background-image:
-    linear-gradient(to right, rgba(255,255,255,0.25) 2px, transparent 1px),
-    linear-gradient(to bottom, rgba(255,255,255,0.25) 2px, transparent 1px);
-  background-size: 40px 40px;
+    linear-gradient(to right, rgba(255,255,255,0.15) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.15) 1px, transparent 1px);
+  background-size: 25,4px 25,4px; /* cada cuadro = 28mm (ajústalo según tu escala) */
 }
+
 
 
 
@@ -84,36 +83,51 @@
 <body>
 
 <div id="toolbar">
+  <select id="unitType">
+    <option value="small">Peana 25mm</option>
+    <option value="normal" selected>Peana 28mm</option>
+    <option value="large">Peana 32mm</option>
+    <option value="huge">Peana 40mm</option>
+  </select>
+
   <button id="blueBtn">Ficha azul</button>
   <button id="redBtn">Ficha roja</button>
-  <button id="objectiveBtn">Objetivo</button>
   <button id="moveBtn">Mover</button>
   <button id="drawBtn">Flecha</button>
   <button id="eraseBtn">Borrar</button>
+  <button id="objectiveBtn">Objetivo</button>
   <button id="exportBtn">Exportar</button>
 </div>
 
 <div id="board"></div>
+
 
   
 
 
 <script>
 window.onload = () => {
-
   const board = document.getElementById('board');
   let mode = 'move';
   let startX = 0;
   let startY = 0;
 
+  // Tamaños de peanas en px
+  const sizes = {
+    small: 25,    // 25mm
+    normal: 28,   // 28mm
+    large: 32,    // 32mm
+    huge: 40      // 40mm
+  };
+
+  // Botones y selector
   document.getElementById('blueBtn').onclick = () => addToken('blue');
   document.getElementById('redBtn').onclick = () => addToken('red');
+  document.getElementById('moveBtn').onclick = () => mode = 'move';
   document.getElementById('drawBtn').onclick = () => mode = 'draw';
   document.getElementById('eraseBtn').onclick = () => mode = 'erase';
-  document.getElementById('moveBtn').onclick = () => mode = 'move';
   document.getElementById('objectiveBtn').onclick = () => mode = 'objective';
-  
-    document.getElementById('exportBtn').onclick = () => {
+  document.getElementById('exportBtn').onclick = () => {
     html2canvas(board).then(canvas => {
       const link = document.createElement('a');
       link.download = 'kt-plan.png';
@@ -122,15 +136,25 @@ window.onload = () => {
     });
   };
 
-
+  // Función para crear ficha según selector
   function addToken(color) {
+    const type = document.getElementById('unitType').value;
     const token = document.createElement('div');
     token.className = 'token ' + color;
+    token.style.position = 'absolute';
     token.style.left = '50px';
     token.style.top = '50px';
+    token.style.width = sizes[type] + 'px';
+    token.style.height = sizes[type] + 'px';
+    token.style.borderRadius = '50%';
     makeDraggable(token);
     board.appendChild(token);
   }
+
+  // Aquí van tus eventos para dibujar, borrar, objetivos, etc.
+  // ...
+};
+
 
   function makeDraggable(el) {
     el.onpointerdown = e => {
