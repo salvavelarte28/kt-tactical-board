@@ -31,6 +31,16 @@ body { margin:0; font-family:sans-serif; }
     linear-gradient(to bottom, rgba(255,255,255,0.15) 1px, transparent 1px);
   background-size:50px 50px; /* 1 celda = 1 pulgada = 50px ahora */
 }
+.token {
+  position: absolute;  /* Para poder moverla */
+  z-index: 10;         /* Encima del mapa y la cuadrícula */
+  border-radius: 50%;  /* Circular */
+  cursor: grab;        /* Para que se vea movible */
+  background-color: gray; /* Color temporal si quieres probar */
+}
+
+.token.blue { background-color: blue; }
+.token.red  { background-color: red; }
 
 .token, .objective, .line { position:absolute; z-index:10; }
 .token { border-radius:50%; cursor:grab; }
