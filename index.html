@@ -30,17 +30,23 @@
   overflow: hidden;
   touch-action: none;
 
-  /* Imagen de mapa */
-  background: url('mapa kt.jpg') no-repeat center center;
-  background-size: cover;
-
-  /* Cuadrícula encima */
+  /* Capas de fondo: mapa primero, luego cuadrícula horizontal y vertical */
   background-image:
-    url('mapa kt.jpg'),
-    linear-gradient(to right, rgba(255,255,255,0.15) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255,255,255,0.15) 1px, transparent 1px);
-  background-size: cover, 40px 40px, 40px 40px;
+    url('mapa.jpg'), /* el mapa */
+    linear-gradient(to right, rgba(255,255,255,0.15) 1px, transparent 1px), /* líneas verticales */
+    linear-gradient(to bottom, rgba(255,255,255,0.15) 1px, transparent 1px); /* líneas horizontales */
+
+  /* Ajuste de tamaños de cada capa */
+  background-size:
+    cover,       /* mapa ocupa todo */
+    40px 40px,   /* cuadrícula vertical */
+    40px 40px;   /* cuadrícula horizontal */
+
+  /* Posición y repetición */
+  background-repeat: no-repeat, repeat, repeat;
+  background-position: center center, 0 0, 0 0;
 }
+
 
 
     .token {
