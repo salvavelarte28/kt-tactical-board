@@ -23,7 +23,7 @@ body { margin:0; font-family:sans-serif; }
   background-image:
     linear-gradient(to right, rgba(255,255,255,0.15) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255,255,255,0.15) 1px, transparent 1px);
-  background-size:28px 28px;
+  background-size:28px 28px; /* 1 celda = 1 pulgada = 28px */
 }
 
 /* Fichas, objetivos y flechas */
@@ -55,7 +55,12 @@ body { margin:0; font-family:sans-serif; }
 window.onload = () => {
   const board = document.getElementById('board');
   let mode = 'move';
-  const sizes = { small:25, normal:28, large:32, huge:40 };
+
+  // Tamaños de peanas en mm
+  const sizesMM = { small:25, normal:28, large:32, huge:40 };
+
+  // Escala: 1 pulgada = 28px
+  const mmToPx = mm => mm * (28 / 25.4);
 
   // Botones
   document.getElementById('blueBtn').onclick = () => addToken('blue');
@@ -74,13 +79,15 @@ window.onload = () => {
   };
 
   // Crear ficha con selección de peana
-  function addToken(color) {
-    const type = prompt("Elige peana: small(25), normal(28), large(32), huge(40)", "normal");
-    if(!type || !sizes[type]) return;
+  function addToken(color){
+    const type = prompt("Elige peana: small, normal, large, huge","normal");
+    if(!type || !sizesMM[type]) return;
+
+    const sizePx = mmToPx(sizesMM[type]);
     const token = document.createElement('div');
     token.className = 'token '+color;
-    token.style.width = sizes[type]+'px';
-    token.style.height = sizes[type]+'px';
+    token.style.width = sizePx+'px';
+    token.style.height = sizePx+'px';
     token.style.left='50px';
     token.style.top='50px';
     makeDraggable(token);
@@ -88,7 +95,7 @@ window.onload = () => {
   }
 
   // Hacer movible cualquier elemento
-  function makeDraggable(el) {
+  function makeDraggable(el){
     el.onmousedown = e=>{
       e.preventDefault();
       let offsetX = e.clientX - el.offsetLeft;
