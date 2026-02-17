@@ -5,11 +5,12 @@
 <title>Kill Team Planner</title>
 
 <style>
-  body {
+body {
   margin: 0;
   font-family: sans-serif;
 }
 
+/* Toolbar */
 #toolbar {
   height: 50px;
   background: #222;
@@ -25,6 +26,7 @@
   cursor: pointer;
 }
 
+/* Tablero */
 #board {
   width: 100vw;
   height: calc(100vh - 50px);
@@ -45,7 +47,7 @@
   width: 100%;
   height: 100%;
   pointer-events: none; /* deja pasar clics */
-  z-index: 0;           /* cuadrícula detrás de fichas */
+  z-index: 2; /* cuadrícula encima del mapa pero debajo de fichas */
   background-image:
     linear-gradient(to right, rgba(255,255,255,0.15) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255,255,255,0.15) 1px, transparent 1px);
@@ -55,7 +57,7 @@
 /* Fichas, objetivos y flechas */
 .token, .objective, .line {
   position: absolute;
-  z-index: 10; /* siempre encima del mapa y cuadrícula */
+  z-index: 10; /* siempre encima de mapa y cuadrícula */
 }
 
 .token {
@@ -76,9 +78,13 @@
   user-select: none;
 }
 
+.line {
+  width: 2px;
+  background: red;
+}
 </style>
 
-
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
 <body>
 
@@ -101,13 +107,11 @@
 
 <div id="board"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script>
 window.onload = () => {
   const board = document.getElementById('board');
   let mode = 'move';
 
-  // Tamaños de peanas
   const sizes = { small: 25, normal: 28, large: 32, huge: 40 };
 
   // Botones
@@ -139,7 +143,7 @@ window.onload = () => {
     board.appendChild(token);
   }
 
-  // Mover elementos
+  // Mover cualquier elemento
   function makeDraggable(el) {
     el.onmousedown = e => {
       e.preventDefault();
@@ -161,7 +165,42 @@ window.onload = () => {
     };
   }
 
-  // Click en tablero solo para objetivos, flechas y borrar
+  // Variables para dibujar flechas
+  let startX, startY, tempLine;
+
+  board.onmousedown = e => {
+    if (mode === 'draw') {
+      startX = e.offsetX;
+      startY = e.offsetY;
+      tempLine = document.createElement('div');
+      tempLine.className = 'line';
+      tempLine.style.left = startX + 'px';
+      tempLine.style.top = startY + 'px';
+      tempLine.style.height = '2px';
+      tempLine.style.width = '0px';
+      board.appendChild(tempLine);
+
+      board.onmousemove = drawMove;
+      board.onmouseup = drawEnd;
+    }
+  };
+
+  function drawMove(e) {
+    const width = Math.hypot(e.offsetX - startX, e.offsetY - startY);
+    tempLine.style.width = width + 'px';
+    const angle = Math.atan2(e.offsetY - startY, e.offsetX - startX) * 180 / Math.PI;
+    tempLine.style.transform = `rotate(${angle}deg)`;
+    tempLine.style.transformOrigin = '0 0';
+  }
+
+  function drawEnd(e) {
+    board.onmousemove = null;
+    board.onmouseup = null;
+    tempLine = null;
+    mode = 'move';
+  }
+
+  // Click en tablero solo para objetivos y borrar
   board.onclick = e => {
     if (mode === 'objective') {
       const objective = document.createElement('div');
@@ -183,9 +222,6 @@ window.onload = () => {
     }
   };
 };
-</script>
-
-
 </script>
 
 </body>
