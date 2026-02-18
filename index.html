@@ -10,27 +10,7 @@ body { margin:0; font-family:sans-serif; }
 }
 #toolbar button, #toolbar select { padding:5px 10px; font-size:14px; cursor:pointer; }
 
-#board {
-  width: 400px;
-  height: 600px;
-  background: red;
-}
 
-
-/* Cuadrícula encima del mapa */
-#board::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 2; /* 🔑 la cuadrícula encima */
-
-  background-image:
-    linear-gradient(to right, rgba(255,255,255,0.15) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255,255,255,0.15) 1px, transparent 1px);
-
-  background-size: var(--cell) var(--cell);
-}
 
 .token {
   position: absolute;  /* Para poder moverla */
@@ -77,19 +57,21 @@ body { margin:0; font-family:sans-serif; }
   background: #888;
 }
 
-#board {
+  #board {
+  position: relative;
   background-color: #111;
   background-image: url("mapa.jpg");
-  background-size: cover;
+  background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
 }
-  
+
 #board::after {
   content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
+  z-index: 2;
 
   background-image:
     linear-gradient(to right, rgba(255,255,255,0.15) 1px, transparent 1px),
@@ -97,6 +79,7 @@ body { margin:0; font-family:sans-serif; }
 
   background-size: var(--cell) var(--cell);
 }
+
 
 }
 
@@ -137,8 +120,6 @@ body { margin:0; font-family:sans-serif; }
 
 </div>
 
-<div id="board"></div>
-
 <script>
 window.onload = () => {
   const toolbarHeight = 50; // ajusta si tienes barra de herramientas
@@ -153,8 +134,8 @@ window.onload = () => {
   const board = document.getElementById('board');
 
   // Aplica tamaño al tablero
-  board.style.width  = boardWidthPx + 'px';
-  board.style.height = boardHeightPx + 'px';
+  .style.width  = WidthPx + 'px';
+  .style.height = HeightPx + 'px';
   let mode = 'move';
 
   // Peanas en mm
@@ -173,7 +154,7 @@ window.onload = () => {
   document.getElementById('eraseBtn').onclick = () => mode='erase';
   document.getElementById('objectiveBtn').onclick = () => mode='objective';
   document.getElementById('exportBtn').onclick = () => {
-    html2canvas(board).then(canvas=>{
+    html2canvas().then(canvas=>{
       const link = document.createElement('a');
       link.download='kt-plan.png';
       link.href=canvas.toDataURL();
@@ -193,11 +174,11 @@ window.onload = () => {
     token.style.height = sizePx + 'px';
 
     // Centrar ficha en tablero
-    token.style.left = (board.clientWidth/2 - sizePx/2) + 'px';
-    token.style.top  = (board.clientHeight/2 - sizePx/2) + 'px';
+    token.style.left = (.clientWidth/2 - sizePx/2) + 'px';
+    token.style.top  = (.clientHeight/2 - sizePx/2) + 'px';
 
     makeDraggable(token);
-    board.appendChild(token);
+    .appendChild(token);
     console.log('Ficha creada', color, 'tamaño px:', sizePx);
   }
 
@@ -222,7 +203,7 @@ window.onload = () => {
 
   // Dibujar flechas
   let startX, startY, tempLine;
-  board.onmousedown = e=>{
+  .onmousedown = e=>{
     if(mode==='draw'){
       startX=e.offsetX; startY=e.offsetY;
       tempLine=document.createElement('div');
@@ -231,9 +212,9 @@ window.onload = () => {
       tempLine.style.top=startY+'px';
       tempLine.style.width='0px';
       tempLine.style.height='2px';
-      board.appendChild(tempLine);
-      board.onmousemove = drawMove;
-      board.onmouseup = drawEnd;
+      .appendChild(tempLine);
+      .onmousemove = drawMove;
+      .onmouseup = drawEnd;
     }
   };
   function drawMove(e){
@@ -244,14 +225,14 @@ window.onload = () => {
     tempLine.style.transformOrigin = '0 0';
   }
   function drawEnd(e){
-    board.onmousemove = null;
-    board.onmouseup = null;
+    .onmousemove = null;
+    .onmouseup = null;
     tempLine = null;
     mode='move';
   }
 
   // Click tablero: objetivos o borrar
-  board.onclick = e=>{
+  .onclick = e=>{
     if(mode==='objective'){
       const objective=document.createElement('div');
       objective.className='objective';
@@ -259,7 +240,7 @@ window.onload = () => {
       objective.style.top = (e.offsetY-12)+'px';
       objective.innerText = prompt("Número o letra del objetivo:","1") || "1";
       makeDraggable(objective);
-      board.appendChild(objective);
+      .appendChild(objective);
       mode='move';
     }
     if(mode==='erase'){
@@ -271,26 +252,29 @@ window.onload = () => {
     }
   };
 
-  // ===== TAMAÑO REAL MAPA KILL TEAM =====
-function resizeBoard() {
-  const toolbar = document.getElementById('toolbar');
-  const board = document.getElementById('board');
+ // ===== PASO 4: TAMAÑO REAL DEL MAPA =====
+  function resizeBoard() {
+    const toolbar = document.getElementById('toolbar');
+    const board = document.getElementById('board');
 
-  if (!toolbar || !board) return;
+    if (!toolbar || !board) return;
 
-  const availableHeight = window.innerHeight - toolbar.offsetHeight;
-  const boardHeight = availableHeight * 0.95;
-  const boardWidth = boardHeight * (22.4 / 30);
+    const availableHeight = window.innerHeight - toolbar.offsetHeight;
+    const boardHeight = availableHeight * 0.95;
+    const boardWidth = boardHeight * (22.4 / 30);
 
-  board.style.height = boardHeight + 'px';
-  board.style.width = boardWidth + 'px';
-}
+    board.style.height = boardHeight + 'px';
+    board.style.width = boardWidth + 'px';
 
-window.addEventListener('resize', resizeBoard);
-window.addEventListener('load', resizeBoard);
+    const pxPerInch = boardHeight / 30;
+    board.style.setProperty('--cell', pxPerInch + 'px');
+  }
 
-};
+  window.addEventListener('load', resizeBoard);
+  window.addEventListener('resize', resizeBoard);
+
 </script>
+
 
 </body>
 </html>
