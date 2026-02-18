@@ -134,10 +134,11 @@ window.onload = () => {
   const board = document.getElementById('board');
 
   // Aplica tamaño al tablero
-  .style.width  = WidthPx + 'px';
-  .style.height = HeightPx + 'px';
-  let mode = 'move';
+  board.style.width  = WidthPx + 'px';
+  board.style.height = HeightPx + 'px';
 
+  let mode = 'move';
+  
   // Peanas en mm
   const sizesMM = { small:25, normal:28, large:32, huge:40 };
   // Escala aumentada: 1 pulgada = 50px
