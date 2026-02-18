@@ -167,6 +167,63 @@ function createPalette(side, color) {
     el.onmousedown = startCloneDrag;
   });
 }
+    let floatingToken = null;
+
+function startCloneDrag(e) {
+  const mm = parseFloat(e.target.dataset.size);
+  const color = e.target.dataset.color;
+
+  const sizePx = mm * (window.pxPerInch / 25.4);
+
+  floatingToken = document.createElement('div');
+  floatingToken.className = 'token ' + color;
+  floatingToken.style.width = sizePx + 'px';
+  floatingToken.style.height = sizePx + 'px';
+  floatingToken.style.position = 'absolute';
+  floatingToken.style.pointerEvents = 'none';
+  document.body.appendChild(floatingToken);
+
+  moveFloating(e);
+
+  document.addEventListener('mousemove', moveFloating);
+  document.addEventListener('mouseup', dropFloating);
+}
+
+function moveFloating(e) {
+  if (!floatingToken) return;
+
+  floatingToken.style.left = (e.clientX - floatingToken.offsetWidth / 2) + 'px';
+  floatingToken.style.top  = (e.clientY - floatingToken.offsetHeight / 2) + 'px';
+}
+
+function dropFloating(e) {
+  document.removeEventListener('mousemove', moveFloating);
+  document.removeEventListener('mouseup', dropFloating);
+
+  const board = document.getElementById('board');
+  const rect = board.getBoundingClientRect();
+
+  if (
+    e.clientX >= rect.left &&
+    e.clientX <= rect.right &&
+    e.clientY >= rect.top &&
+    e.clientY <= rect.bottom
+  ) {
+    floatingToken.style.left =
+      (e.clientX - rect.left - floatingToken.offsetWidth / 2) + 'px';
+    floatingToken.style.top =
+      (e.clientY - rect.top - floatingToken.offsetHeight / 2) + 'px';
+
+    floatingToken.style.pointerEvents = 'auto';
+    board.appendChild(floatingToken);
+    makeDraggable(floatingToken);
+  } else {
+    floatingToken.remove();
+  }
+
+  floatingToken = null;
+}
+
 
   
   // Peanas en mm
