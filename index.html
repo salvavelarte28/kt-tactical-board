@@ -366,8 +366,13 @@ function dropFloating(e) {
 
 
   window.addEventListener('load', resizeBoard);
+    
   resizeBoard(); // 👈 esto fuerza tamaño inmediato
   window.addEventListener('resize', resizeBoard);
+
+  createPalette('leftPanel', 'blue');
+  createPalette('rightPanel', 'red');
+
 
   
 });
