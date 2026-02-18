@@ -250,6 +250,25 @@ window.onload = () => {
       mode='move';
     }
   };
+
+  // ===== TAMAÑO REAL MAPA KILL TEAM =====
+function resizeBoard() {
+  const toolbar = document.getElementById('toolbar');
+  const board = document.getElementById('board');
+
+  if (!toolbar || !board) return;
+
+  const availableHeight = window.innerHeight - toolbar.offsetHeight;
+  const boardHeight = availableHeight * 0.95;
+  const boardWidth = boardHeight * (22.4 / 30);
+
+  board.style.height = boardHeight + 'px';
+  board.style.width = boardWidth + 'px';
+}
+
+window.addEventListener('resize', resizeBoard);
+window.addEventListener('load', resizeBoard);
+
 };
 </script>
 
