@@ -126,8 +126,7 @@ window.onload = () => {
   const toolbarHeight = 50; // ajusta si tienes barra de herramientas
   const screenHeight = window.innerHeight - toolbarHeight; // altura disponible
 
-  const boardHeight = Math.max(availableHeight * 0.95, 300);
-  const boardWidth  = boardHeight * (30 / 22.4);
+ 
 
   board.style.height = boardHeight + 'px';
   board.style.width  = boardWidth + 'px';
@@ -262,27 +261,21 @@ window.onload = () => {
   const toolbar = document.getElementById('toolbar');
   const board = document.getElementById('board');
 
-  if (!toolbar || !board) {
-    console.log("❌ toolbar o board no existen");
-    return;
-  }
+  if (!toolbar || !board) return;
 
+  // Altura disponible real
   const availableHeight = window.innerHeight - toolbar.offsetHeight;
 
-  console.log("window.innerHeight:", window.innerHeight);
-  console.log("toolbar.offsetHeight:", toolbar.offsetHeight);
-  console.log("availableHeight:", availableHeight);
-
-  const boardHeight = Math.max(availableHeight * 0.95, 300);
-  const boardWidth = boardHeight * (22.4 / 30);
-
-  console.log("boardHeight:", boardHeight);
-  console.log("boardWidth:", boardWidth);
+  // Horizontal: 30 pulgadas ancho
+  const boardHeight = availableHeight * 0.95;
+  const boardWidth  = boardHeight * (30 / 22.4);
 
   board.style.height = boardHeight + 'px';
-  board.style.width = boardWidth + 'px';
+  board.style.width  = boardWidth + 'px';
 
-  const pxPerInch = boardHeight / 30;
+  // 1 pulgada real en píxeles
+  const pxPerInch = boardWidth / 30;
+
   board.style.setProperty('--cell', pxPerInch + 'px');
 }
 
