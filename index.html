@@ -214,8 +214,8 @@ window.onload = () => {
       tempLine.style.width='0px';
       tempLine.style.height='2px';
       board.appendChild(tempLine);
-      .onmousemove = drawMove;
-      .onmouseup = drawEnd;
+      board.onmousemove = drawMove;
+      board.onmouseup = drawEnd;
     }
   };
   function drawMove(e){
