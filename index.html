@@ -179,7 +179,7 @@ window.onload = () => {
     token.style.top  = (board.clientHeight/2 - sizePx/2) + 'px';
 
     makeDraggable(token);
-    .appendChild(token);
+    board.appendChild(token);
     console.log('Ficha creada', color, 'tamaño px:', sizePx);
   }
 
