@@ -121,14 +121,12 @@ body { margin:0; font-family:sans-serif; }
 </div>
 
 <script>
-window.onload = () => {
+
+  document.addEventListener('DOMContentLoaded', () => {
+  
   const board = document.getElementById('board');
   const toolbarHeight = 50; // ajusta si tienes barra de herramientas
   const screenHeight = window.innerHeight - toolbarHeight; // altura disponible
-
- 
-
-  
 
   let mode = 'move';
   
@@ -136,7 +134,6 @@ window.onload = () => {
   const sizesMM = { small:25, normal:28, large:32, huge:40 };
   // Escala aumentada: 1 pulgada = 50px
   const mmToPx = mm => mm * (window.pxPerInch / 25.4);
-
 
   const blueSelect = document.getElementById('blueUnitType');
   const redSelect = document.getElementById('redUnitType');
@@ -273,8 +270,11 @@ window.onload = () => {
 
 
   window.addEventListener('load', resizeBoard);
+  resizeBoard(); // 👈 esto fuerza tamaño inmediato
   window.addEventListener('resize', resizeBoard);
-};
+
+  
+});
 </script>
 
 
