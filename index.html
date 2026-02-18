@@ -135,7 +135,8 @@ window.onload = () => {
   // Peanas en mm
   const sizesMM = { small:25, normal:28, large:32, huge:40 };
   // Escala aumentada: 1 pulgada = 50px
-  const mmToPx = mm => mm * (50 / 25.4);
+  const mmToPx = mm => mm * (window.pxPerInch / 25.4);
+
 
   const blueSelect = document.getElementById('blueUnitType');
   const redSelect = document.getElementById('redUnitType');
@@ -264,7 +265,8 @@ window.onload = () => {
   board.style.width  = boardWidth + 'px';
 
   // 1 pulgada real en píxeles
-  const pxPerInch = boardWidth / 30;
+ window.pxPerInch = boardWidth / 30;
+
 
   board.style.setProperty('--cell', pxPerInch + 'px');
 }
