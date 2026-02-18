@@ -126,13 +126,13 @@ window.onload = () => {
   const toolbarHeight = 50; // ajusta si tienes barra de herramientas
   const screenHeight = window.innerHeight - toolbarHeight; // altura disponible
 
-  const boardHeightPx = screenHeight;  // alto tablero Kill Team
-  const boardWidthPx  = boardHeightPx * (30 / 22.4);  // ancho tablero Kill Team
+  const boardHeight = Math.max(availableHeight * 0.95, 300);
+  const boardWidth  = boardHeight * (30 / 22.4);
 
-  board.style.width  = boardWidthPx + 'px';
-  board.style.height = boardHeightPx + 'px';
+  board.style.height = boardHeight + 'px';
+  board.style.width  = boardWidth + 'px';
 
-  const pxPerInch = boardHeightPx / 30;          // 1 pulgada = 50 px
+  const pxPerInch = boardWidth / 30;   // 👈 ESTA ES LA CLAVE
   board.style.setProperty('--cell', pxPerInch + 'px');
 
   
