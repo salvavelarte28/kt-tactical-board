@@ -43,11 +43,29 @@ body { margin:0; font-family:sans-serif; }
   height: 60px;
   background: #2b6cff;
   color: white;
+
   display: flex;
-  align-items: center;
-  padding: 0 16px;
-  font-weight: bold;
+  justify-content: center;   /* 👈 centra horizontal */
+  align-items: center;       /* 👈 centra vertical */
+
+  gap: 15px;                 /* espacio entre botones */
 }
+
+#toolbar button {
+  background: white;
+  color: #2b6cff;
+  border: none;
+  padding: 6px 14px;
+  font-weight: 600;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#toolbar button:hover {
+  background: #e6e6e6;
+}
+
+
 
 #main {
   flex: 1;
@@ -102,7 +120,6 @@ body { margin:0; font-family:sans-serif; }
 <div id="app">
 
   <div id="toolbar">
-    TOOLBAR
      
   <button id="moveBtn">Mover</button>
   <button id="drawBtn">Flecha</button>
