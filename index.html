@@ -204,7 +204,7 @@ window.onload = () => {
 
   // Dibujar flechas
   let startX, startY, tempLine;
-  .onmousedown = e=>{
+  board.onmousedown = e=>{
     if(mode==='draw'){
       startX=e.offsetX; startY=e.offsetY;
       tempLine=document.createElement('div');
@@ -233,7 +233,7 @@ window.onload = () => {
   }
 
   // Click tablero: objetivos o borrar
-  .onclick = e=>{
+  board.onclick = e=>{
     if(mode==='objective'){
       const objective=document.createElement('div');
       objective.className='objective';
@@ -241,7 +241,7 @@ window.onload = () => {
       objective.style.top = (e.offsetY-12)+'px';
       objective.innerText = prompt("Número o letra del objetivo:","1") || "1";
       makeDraggable(objective);
-      .appendChild(objective);
+      board.appendChild(objective);
       mode='move';
     }
     if(mode==='erase'){
