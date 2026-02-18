@@ -254,21 +254,33 @@ window.onload = () => {
 
  // ===== PASO 4: TAMAÑO REAL DEL MAPA =====
   function resizeBoard() {
-    const toolbar = document.getElementById('toolbar');
-    const board = document.getElementById('board');
+  const toolbar = document.getElementById('toolbar');
+  const board = document.getElementById('board');
 
-    if (!toolbar || !board) return;
-
-    const availableHeight = window.innerHeight - toolbar.offsetHeight;
-    const boardHeight = availableHeight * 0.95;
-    const boardWidth = boardHeight * (22.4 / 30);
-
-    board.style.height = boardHeight + 'px';
-    board.style.width = boardWidth + 'px';
-
-    const pxPerInch = boardHeight / 30;
-    board.style.setProperty('--cell', pxPerInch + 'px');
+  if (!toolbar || !board) {
+    console.log("❌ toolbar o board no existen");
+    return;
   }
+
+  const availableHeight = window.innerHeight - toolbar.offsetHeight;
+
+  console.log("window.innerHeight:", window.innerHeight);
+  console.log("toolbar.offsetHeight:", toolbar.offsetHeight);
+  console.log("availableHeight:", availableHeight);
+
+  const boardHeight = Math.max(availableHeight * 0.95, 300);
+  const boardWidth = boardHeight * (22.4 / 30);
+
+  console.log("boardHeight:", boardHeight);
+  console.log("boardWidth:", boardWidth);
+
+  board.style.height = boardHeight + 'px';
+  board.style.width = boardWidth + 'px';
+
+  const pxPerInch = boardHeight / 30;
+  board.style.setProperty('--cell', pxPerInch + 'px');
+}
+
 
   window.addEventListener('load', resizeBoard);
   window.addEventListener('resize', resizeBoard);
