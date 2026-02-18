@@ -143,6 +143,31 @@ body { margin:0; font-family:sans-serif; }
   const screenHeight = window.innerHeight - toolbarHeight; // altura disponible
 
   let mode = 'move';
+    // ===== GENERAR PALETAS LATERALES =====
+
+const sizes = [25, 28, 32, 40];
+
+function createPalette(side, color) {
+  const panel = document.getElementById(side);
+
+  sizes.forEach(mm => {
+    const sizePx = mm * (window.pxPerInch / 25.4);
+
+    const el = document.createElement('div');
+    el.className = 'palette ' + color;
+    el.style.width = sizePx + 'px';
+    el.style.height = sizePx + 'px';
+    el.style.background = color;
+
+    el.dataset.size = mm;
+    el.dataset.color = color;
+
+    panel.appendChild(el);
+
+    el.onmousedown = startCloneDrag;
+  });
+}
+
   
   // Peanas en mm
   const sizesMM = { small:25, normal:28, large:32, huge:40 };
