@@ -112,6 +112,17 @@ body { margin:0; font-family:sans-serif; }
   cursor: grab;
   opacity: 0.9;
 }
+
+  .palette {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: white;
+  font-size: 12px;
+  user-select: none;
+}
+
  
 </style>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
@@ -160,6 +171,8 @@ function createPalette(side, color) {
     el.style.width = sizePx + 'px';
     el.style.height = sizePx + 'px';
     el.style.background = color;
+    el.innerText = mm;
+
 
     el.dataset.size = mm;
     el.dataset.color = color;
