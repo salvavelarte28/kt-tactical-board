@@ -218,14 +218,7 @@ function dropFloating(e) {
 
  
 
-    // Centrar ficha en tablero
-    token.style.left = (board.clientWidth/2 - sizePx/2) + 'px';
-    token.style.top  = (board.clientHeight/2 - sizePx/2) + 'px';
-
-    makeDraggable(token);
-    board.appendChild(token);
-    console.log('Ficha creada', color, 'tamaño px:', sizePx);
-  }
+    
 
   // Hacer movible cualquier elemento
   function makeDraggable(el){
