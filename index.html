@@ -103,22 +103,7 @@ body { margin:0; font-family:sans-serif; }
 
   <div id="toolbar">
     TOOLBAR
-     <select id="blueUnitType">
-    <option value="small">25 mm</option>
-    <option value="normal" selected>28 mm</option>
-    <option value="large">32 mm</option>
-    <option value="huge">40 mm</option>
-  </select>
-  <button id="blueBtn">Ficha azul</button>
-
-  <select id="redUnitType">
-    <option value="small">25 mm</option>
-    <option value="normal" selected>28 mm</option>
-    <option value="large">32 mm</option>
-    <option value="huge">40 mm</option>
-  </select>
-  <button id="redBtn">Ficha roja</button>
-
+     
   <button id="moveBtn">Mover</button>
   <button id="drawBtn">Flecha</button>
   <button id="eraseBtn">Borrar</button>
@@ -231,35 +216,7 @@ function dropFloating(e) {
   // Escala aumentada: 1 pulgada = 50px
   const mmToPx = mm => mm * (window.pxPerInch / 25.4);
 
-  const blueSelect = document.getElementById('blueUnitType');
-  const redSelect = document.getElementById('redUnitType');
-
-  // Botones
-  document.getElementById('blueBtn').onclick = () => addToken('blue');
-  document.getElementById('redBtn').onclick = () => addToken('red');
-  document.getElementById('moveBtn').onclick = () => mode='move';
-  document.getElementById('drawBtn').onclick = () => mode='draw';
-  document.getElementById('eraseBtn').onclick = () => mode='erase';
-  document.getElementById('objectiveBtn').onclick = () => mode='objective';
-  document.getElementById('exportBtn').onclick = () => {
-    html2canvas().then(canvas=>{
-      const link = document.createElement('a');
-      link.download='kt-plan.png';
-      link.href=canvas.toDataURL();
-      link.click();
-    });
-  };
-
-  // Crear ficha según color y selector correspondiente
-  function addToken(color){
-    let type = (color==='blue') ? blueSelect.value : redSelect.value;
-    if(!sizesMM[type]) return;
-    const sizePx = mmToPx(sizesMM[type]);
-
-    const token = document.createElement('div');
-    token.className = 'token ' + color;
-    token.style.width = sizePx + 'px';
-    token.style.height = sizePx + 'px';
+ 
 
     // Centrar ficha en tablero
     token.style.left = (board.clientWidth/2 - sizePx/2) + 'px';
