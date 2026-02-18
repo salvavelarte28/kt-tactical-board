@@ -128,17 +128,7 @@ window.onload = () => {
 
  
 
-  board.style.height = boardHeight + 'px';
-  board.style.width  = boardWidth + 'px';
-
-  const pxPerInch = boardWidth / 30;   // 👈 ESTA ES LA CLAVE
-  board.style.setProperty('--cell', pxPerInch + 'px');
-
   
-
-  // Aplica tamaño al tablero
-  board.style.width  = boardWidthPx + 'px';
-  board.style.height = boardHeightPx + 'px';
 
   let mode = 'move';
   
