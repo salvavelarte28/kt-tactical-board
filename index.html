@@ -149,13 +149,14 @@ body { margin:0; font-family:sans-serif; }
 
 <script>
 
+  let mode = 'move';
+
   document.addEventListener('DOMContentLoaded', () => {
   
   const board = document.getElementById('board');
   const toolbarHeight = 50; // ajusta si tienes barra de herramientas
   const screenHeight = window.innerHeight - toolbarHeight; // altura disponible
-
-  let mode = 'move';
+    
     // ===== GENERAR PALETAS LATERALES =====
 
 const sizes = [25, 28, 32, 40];
