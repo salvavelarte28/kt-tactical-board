@@ -136,6 +136,7 @@ body { margin:0; font-family:sans-serif; }
   <button id="drawBtn">Flecha</button>
   <button id="eraseBtn">Borrar</button>
   <button id="objectiveBtn">Objetivo</button>
+  <button id="measureBtn">Medir</button
   <button id="exportBtn">Exportar</button>
   </div>
 
@@ -155,7 +156,17 @@ body { margin:0; font-family:sans-serif; }
   
   const board = document.getElementById('board');
   const toolbarHeight = 50; // ajusta si tienes barra de herramientas
-  const screenHeight = window.innerHeight - toolbarHeight; // altura disponible
+  const screenHeight = window.innerHeight - toolbarHeight; // altura disponible 
+    
+    // ===== BOTONES DE MODO =====
+
+document.getElementById('moveBtn').onclick = () => mode = 'move';
+document.getElementById('drawBtn').onclick = () => mode = 'draw';
+document.getElementById('eraseBtn').onclick = () => mode = 'erase';
+document.getElementById('measureBtn').onclick = () => mode = 'measure';
+document.getElementById('objectiveBtn').onclick = () => mode = 'objective';
+
+ 
     
     // ===== GENERAR PALETAS LATERALES =====
 
